@@ -1,5 +1,5 @@
 {
-  "name": "jogjafood-finder",
+  "name": "jogjafood-finder-api",
   "version": "1.0.0",
   "description": "JogjaFood Finder API Endpoint from Capstone Team C241-PR561",
   "main": "index.js",

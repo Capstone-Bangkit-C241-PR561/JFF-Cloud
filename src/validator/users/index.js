@@ -1,6 +1,7 @@
 const {
   UserSignUpPayloadSchema,
   UserSignInPayloadSchema,
+  imageHeadersSchema,
 } = require("./schema");
 const InvariantError = require("../../exceptions/InvariantError");
 
@@ -14,6 +15,13 @@ const UsersValidator = {
   },
   validateUserSignInPayload: (payload) => {
     const validationResult = UserSignInPayloadSchema.validate(payload);
+
+    if (validationResult.error) {
+      throw new InvariantError(validationResult.error.message);
+    }
+  },
+  validateImageHeaders: (payload) => {
+    const validationResult = imageHeadersSchema.validate(payload);
 
     if (validationResult.error) {
       throw new InvariantError(validationResult.error.message);

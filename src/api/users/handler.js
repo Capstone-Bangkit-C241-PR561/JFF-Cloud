@@ -21,8 +21,8 @@ class UsersHandler {
   async postSignUpHandler(request, h) {
     try {
       this._validator.validateUserSignUpPayload(request.payload);
-
       const { username, email, password } = request.payload;
+
       const userCredential = await createUserWithEmailAndPassword(
         auth,
         email,
@@ -41,6 +41,10 @@ class UsersHandler {
       response.code(201);
       return response;
     } catch (error) {
+      if (error instanceof InvariantError) {
+        return error;
+      }
+
       if (error.code === "auth/email-already-in-use") {
         throw new InvariantError("Email already in use");
       }
@@ -51,10 +55,9 @@ class UsersHandler {
   async postSignInHandler(request, h) {
     try {
       this._validator.validateUserSignInPayload(request.payload);
-
       const { username, password } = request.payload;
 
-      // Get user by username
+      // Get email from user database
       const user = await this._service.getUserByUsername(username);
       const { email } = user;
 
@@ -72,7 +75,7 @@ class UsersHandler {
       response.code(200);
       return response;
     } catch (error) {
-      if (error instanceof NotFoundError) {
+      if (error instanceof InvariantError || error instanceof NotFoundError) {
         return error;
       }
 
@@ -108,31 +111,29 @@ class UsersHandler {
 
   // Upload Profile Image
   async uploadProfileImgHandler(request, h) {
-    try {
-      const { uid } = request.params;
-      const { image } = request.payload;
+    const { uid } = request.params;
+    const { image } = request.payload;
 
-      // Get image metadata
-      const imageData = image.hapi;
+    this._validator.validateImageHeaders(image.hapi.headers);
 
-      const imageUrl = await this._service.uploadProfileImg(
-        uid,
-        image,
-        imageData
-      );
+    // Get image metadata
+    const imageData = image.hapi;
 
-      const response = h.response({
-        status: "success",
-        message: "Profile Image updated",
-        data: {
-          profileImg: imageUrl,
-        },
-      });
-      response.code(200);
-      return response;
-    } catch (error) {
-      console.error(`Error while upload profile image: ${error.message}`);
-    }
+    const imageUrl = await this._service.uploadProfileImg(
+      uid,
+      image,
+      imageData
+    );
+
+    const response = h.response({
+      status: "success",
+      message: "Profile image updated",
+      data: {
+        profileImg: imageUrl,
+      },
+    });
+    response.code(200);
+    return response;
   }
 }
 
