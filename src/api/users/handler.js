@@ -23,6 +23,20 @@ class UsersHandler {
       this._validator.validateUserSignUpPayload(request.payload);
       const { username, email, password } = request.payload;
 
+      // Check username already exists
+      const usernameIsExists = await this._service
+        .getUserByUsername(username)
+        .then(() => true)
+        .catch((error) => {
+          if (error instanceof NotFoundError) {
+            return false;
+          }
+        });
+      if (usernameIsExists) {
+        throw new InvariantError("Username already exists");
+      }
+
+      // Create a new user
       const userCredential = await createUserWithEmailAndPassword(
         auth,
         email,
@@ -46,7 +60,7 @@ class UsersHandler {
       }
 
       if (error.code === "auth/email-already-in-use") {
-        throw new InvariantError("Email already in use");
+        throw new InvariantError("Email already exists");
       }
     }
   }
