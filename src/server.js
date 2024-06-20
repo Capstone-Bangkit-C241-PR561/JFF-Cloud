@@ -3,9 +3,18 @@ require("dotenv").config();
 const Hapi = require("@hapi/hapi");
 const Inert = require("@hapi/inert");
 const ClientError = require("./exceptions/ClientError");
+
+// users
 const users = require("./api/users");
 const UsersService = require("./services/usersService");
 const UsersValidator = require("./validator/users/index");
+
+// machine learning model
+const loadModel = require("./services/loadModel");
+
+// restaurants
+const RestaurantService = require("./services/restaurantsService");
+const restaurants = require("./api/restaurants");
 
 (async () => {
   const usersService = new UsersService();
@@ -20,6 +29,10 @@ const UsersValidator = require("./validator/users/index");
     },
   });
 
+  // Load Model and save in server
+  const model = await loadModel();
+  server.app.model = model;
+
   await server.register([Inert]);
 
   await server.register([
@@ -28,6 +41,12 @@ const UsersValidator = require("./validator/users/index");
       options: {
         service: usersService,
         validator: UsersValidator,
+      },
+    },
+    {
+      plugin: restaurants,
+      options: {
+        service: RestaurantService,
       },
     },
   ]);
@@ -60,6 +79,10 @@ const UsersValidator = require("./validator/users/index");
     return h.continue;
   });
 
-  await server.start();
-  console.log(`Server start at: ${server.info.uri}`);
+  try {
+    await server.start();
+    console.log(`Server start at: ${server.info.uri}`);
+  } catch (error) {
+    console.error(`Error starting server: ${error}`);
+  }
 })();

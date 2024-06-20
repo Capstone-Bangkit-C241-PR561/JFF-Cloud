@@ -32,6 +32,11 @@ const routes = (handler) => [
       },
     },
   },
+  {
+    method: "POST",
+    path: "/users/{uid}/change-password",
+    handler: handler.postUserChangePasswordHandler,
+  },
 ];
 
 module.exports = routes;

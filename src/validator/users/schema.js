@@ -26,7 +26,7 @@ const UserSignInPayloadSchema = Joi.object({
   }),
 });
 
-const imageHeadersSchema = Joi.object({
+const ImageHeadersSchema = Joi.object({
   "content-type": Joi.string()
     .valid(
       "image/apng",
@@ -43,8 +43,25 @@ const imageHeadersSchema = Joi.object({
     }),
 }).unknown();
 
+const ChangePasswordPayloadSchema = Joi.object({
+  email: Joi.string().email().required().messages({
+    "string.empty": "Email is not allowed to be empty",
+    "any.required": "Email is required",
+    "string.email": "Email must be a valid email address",
+  }),
+  oldPassword: Joi.string().required().messages({
+    "string.empty": "Old Password is not allowed to be empty",
+    "any.required": "Old Password is required",
+  }),
+  newPassword: Joi.string().required().messages({
+    "string.empty": "New Password is not allowed to be empty",
+    "any.required": "New Password is required",
+  }),
+});
+
 module.exports = {
   UserSignUpPayloadSchema,
   UserSignInPayloadSchema,
-  imageHeadersSchema,
+  ImageHeadersSchema,
+  ChangePasswordPayloadSchema,
 };

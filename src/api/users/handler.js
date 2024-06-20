@@ -3,6 +3,7 @@ const {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
   signOut,
+  updatePassword,
 } = require("firebase/auth");
 const { auth } = require("../../config/firebaseApp");
 const InvariantError = require("../../exceptions/InvariantError");
@@ -103,24 +104,24 @@ class UsersHandler {
   // eslint-disable-next-line class-methods-use-this
   async postSignOutHandler(request, h) {
     await signOut(auth);
-    return h
-      .response({
-        status: "success",
-        message: "Signed out successfully",
-      })
-      .code(200);
+    const response = h.response({
+      status: "success",
+      message: "Signed out successfully",
+    });
+    response.code(200);
+    return response;
   }
 
   // Get User by uid
   async getUserByIdHandler(request, h) {
     const { uid } = request.params;
     const user = await this._service.getUserById(uid);
-    return h
-      .response({
-        status: "success",
-        data: user,
-      })
-      .code(200);
+    const response = h.response({
+      status: "success",
+      data: user,
+    });
+    response.code(200);
+    return response;
   }
 
   // Upload Profile Image
@@ -148,6 +149,36 @@ class UsersHandler {
     });
     response.code(200);
     return response;
+  }
+
+  async postUserChangePasswordHandler(request, h) {
+    try {
+      this._validator.validateChangePasswordPayload(request.payload);
+      const { email, oldPassword, newPassword } = request.payload;
+      const { uid } = request.params;
+
+      await this._service.getUserById(uid);
+
+      await signInWithEmailAndPassword(auth, email, oldPassword);
+      const user = auth.currentUser;
+
+      await updatePassword(user, newPassword);
+
+      const response = h.response({
+        status: "success",
+        message: "Password updated successfully",
+      });
+      response.code(200);
+      return response;
+    } catch (error) {
+      if (error instanceof InvariantError || error instanceof NotFoundError) {
+        return error;
+      }
+
+      if (error.code === "auth/wrong-password") {
+        throw new AuthenticationError("Invalid current password");
+      }
+    }
   }
 }
 

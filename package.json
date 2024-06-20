@@ -15,10 +15,12 @@
     "@google-cloud/storage": "^7.11.1",
     "@hapi/hapi": "^21.3.9",
     "@hapi/inert": "^7.1.0",
+    "@tensorflow/tfjs-node": "^4.20.0",
     "auto-bind": "^4.0.0",
     "dotenv": "^16.4.5",
     "firebase": "^10.12.2",
     "firebase-admin": "^12.1.1",
+    "haversine-distance": "^1.2.3",
     "joi": "^17.13.1",
     "nodemon": "^3.1.1"
   },

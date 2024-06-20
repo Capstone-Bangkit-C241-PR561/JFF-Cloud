@@ -8,6 +8,7 @@ const {
   getDocs,
   updateDoc,
 } = require("firebase/firestore");
+const { getAuth } = require("firebase/auth");
 const { db } = require("../config/firebaseApp");
 const bucket = require("../config/cloudStorage");
 const NotFoundError = require("../exceptions/NotFoundError");
@@ -15,6 +16,7 @@ const NotFoundError = require("../exceptions/NotFoundError");
 class UsersService {
   constructor() {
     this._db = db;
+    this._auth = getAuth();
   }
 
   // Add user to database
