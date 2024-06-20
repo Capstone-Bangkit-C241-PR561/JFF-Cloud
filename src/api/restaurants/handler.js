@@ -69,6 +69,17 @@ class RestaurantsHandler {
     response.code(200);
     return response;
   }
+
+  // Function get best restaurants
+  async getBestRestaurantsHandler(request, h) {
+    const bestRestaurants = await this._service.getBestRestaurants();
+    const response = h.response({
+      status: "success",
+      data: bestRestaurants,
+    });
+    response.code(200);
+    return response;
+  }
 }
 
 module.exports = RestaurantsHandler;

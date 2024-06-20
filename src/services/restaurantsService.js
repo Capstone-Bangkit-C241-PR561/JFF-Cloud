@@ -137,6 +137,25 @@ class RestaurantService {
 
     return restaurant;
   }
+
+  // Get best restaurants
+  getBestRestaurants() {
+    const bestRestaurants = this._restaurants
+      .sort((a, b) => b.rating - a.rating)
+      .slice(0, 10)
+      .map((restaurant) => ({
+        id: restaurant.id,
+        name: restaurant.name,
+        avgPrice: restaurant.avgPrice,
+        rating: restaurant.rating,
+        foodVariety: restaurant.foodVariety,
+        diningType: restaurant.diningType,
+        latitude: restaurant.latitude,
+        longitude: restaurant.longitude,
+      }));
+
+    return bestRestaurants;
+  }
 }
 
 module.exports = RestaurantService;
