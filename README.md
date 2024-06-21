@@ -9,4 +9,4 @@ Responsible for providing databases, connecting front-end and back-end, managing
 
 # API Documentations
 
-JogjaFood API: https://documenter.getpostman.com/view/26883718/2sA3QzYnmd
+JogjaFood Finder API: https://documenter.getpostman.com/view/26883718/2sA3QzYnmd
