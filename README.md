@@ -7,6 +7,6 @@ Responsible for providing databases, connecting front-end and back-end, managing
 1. C731D4KY0862 - Muhammad Aris Efendi - Active
 2. C001D4KY0047 - Muhammad Almal Nafy - Active
 
-# Documentations
+# API Documentations
 
-Postman: https://documenter.getpostman.com/view/26883718/2sA3QzYnmd
+JogjaFood API: https://documenter.getpostman.com/view/26883718/2sA3QzYnmd
